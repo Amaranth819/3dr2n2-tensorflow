@@ -61,11 +61,13 @@ def create_subcate_dataset(img_path, model_path, bs, scale, is_train, repeat_siz
     print len(all_models)
     
     dataset = tf.data.Dataset.from_tensor_slices((all_images, all_models))
+    dataset = dataset.shuffle(len(all_models))
     dataset = dataset.map(map_batch)
     if repeat_size is None:
-        dataset = dataset.shuffle(2000).batch(bs).repeat()
+        dataset = dataset.batch(bs).repeat()
     else:
-        dataset = dataset.shuffle(2000).batch(bs).repeat(repeat_size)
+        dataset = dataset.batch(bs).repeat(repeat_size)
+    
     return dataset
 
 def create_big_dataset(img_path, model_path, categories, bs, scale, is_train, repeat_size = None):
@@ -103,11 +105,11 @@ def create_big_dataset(img_path, model_path, categories, bs, scale, is_train, re
     print len(models)
     
     big_dataset = tf.data.Dataset.from_tensor_slices((imgs, models))
-    big_dataset = big_dataset.map(map_batch)
     if repeat_size is None:
-        big_dataset = big_dataset.shuffle(1000).batch(bs).repeat()
+        big_dataset = big_dataset.shuffle(len(models)).batch(bs).repeat()
     else:
-        big_dataset = big_dataset.shuffle(1000).batch(bs).repeat(repeat_size)
+        big_dataset = big_dataset.shuffle(len(models)).batch(bs).repeat(repeat_size)
+    big_dataset = big_dataset.map(map_batch)
     
     print("Create the dataset successfully!")
     
