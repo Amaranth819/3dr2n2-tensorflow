@@ -71,6 +71,7 @@ def batch_normalization(x):
 def fcconv3d_layer(h_t, feature_x, filters, n_gru_vox, namew, nameb):
     out_shape = h_t.get_shape().as_list()
     fc_output = fully_connected_layer(feature_x, n_gru_vox * n_gru_vox * n_gru_vox * filters, namew, nameb)
+    fc_output = relu_layer(fc_output)
     fc_output = tf.reshape(fc_output, out_shape)
     h_tn = fc_output + slim.conv3d(h_t, filters, [3, 3, 3])
     return h_tn
@@ -88,8 +89,3 @@ def unpooling_layer(x):
     out_size = [-1] + [s * 2 for s in shape[1:-1]] + [shape[-1]]
     out = tf.reshape(out, out_size)
     return out
-
-def conv3d_layer(x, filters, k):
-    x = slim.conv3d(x, filters, k)
-    x = relu_layer(x)
-    return x
