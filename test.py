@@ -46,7 +46,7 @@ def test(graph_path, ckpt_path, input_name, gt_name, pred_name, test_category, t
         pred = graph.get_tensor_by_name(pred_name)
         IoU = graph.get_tensor_by_name("IoU:0")
         
-        # Write model
+#        # Write model
 #        for i in range(test_size):
 #            batch_tensor = iterator.get_next()
 #            batch = sess.run(batch_tensor)
@@ -57,8 +57,9 @@ def test(graph_path, ckpt_path, input_name, gt_name, pred_name, test_category, t
 #            write_prediction(i, p, bs, pred_size, threshold)
         
         # Calculate average IoU
+        
+        total_iou = []
         try:
-            total_iou = []
             i = 1
             while True:
                 batch = sess.run(batch_tensor)
@@ -75,6 +76,7 @@ def test(graph_path, ckpt_path, input_name, gt_name, pred_name, test_category, t
             print("The average IoU of subcategory %d is %.6f." % (test_category, np.mean(total_iou)))
         except tf.errors.OutOfRangeError:
             print("end!")
+            print("The average IoU of subcategory %d is %.6f." % (test_category, np.mean(total_iou)))
             
                 
 test(graph_path = config.save_model_path + config.model_name + '-100.meta',
