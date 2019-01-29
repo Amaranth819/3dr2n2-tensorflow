@@ -45,38 +45,39 @@ def test(graph_path, ckpt_path, input_name, gt_name, pred_name, test_category, t
         gt = graph.get_tensor_by_name(gt_name)
         pred = graph.get_tensor_by_name(pred_name)
         IoU = graph.get_tensor_by_name("IoU:0")
+        loss = graph.get_tensor_by_name("loss_function/cross_entropy_loss:0")
         
-#        # Write model
-#        for i in range(test_size):
-#            batch_tensor = iterator.get_next()
-#            batch = sess.run(batch_tensor)
-#            img_matrix = dataset.img2matrix(batch[0], seq)
-#            model_matrix = dataset.modelpath2matrix(batch[1])
-#            
-#            p = sess.run([pred], feed_dict = {x : img_matrix, gt : model_matrix})
-#            write_prediction(i, p, bs, pred_size, threshold)
+        # Write model
+        for i in range(test_size):
+            batch_tensor = iterator.get_next()
+            batch = sess.run(batch_tensor)
+            print(batch[1])
+            img_matrix = dataset.img2matrix(batch[0], seq)
+            model_matrix = dataset.modelpath2matrix(batch[1])
+            p = sess.run([pred], feed_dict = {x : img_matrix, gt : model_matrix})
+            write_prediction(i, p, bs, pred_size, threshold)
         
-        # Calculate average IoU
-        
-        total_iou = []
-        try:
-            i = 1
-            while True:
-                batch = sess.run(batch_tensor)
-                if batch[0].shape[0] is not bs:
-                    break
-                img_matrix = dataset.img2matrix(batch[0], seq)
-                model_matrix = dataset.modelpath2matrix(batch[1])
-                
-                batch_iou = sess.run([IoU], feed_dict = {x : img_matrix, gt : model_matrix})
-                total_iou.append(batch_iou)
-                i += 1
-                if i % 20 == 0:
-                    print("IoU of %d batches: %.6f." % (i, np.mean(total_iou)))
-            print("The average IoU of subcategory %d is %.6f." % (test_category, np.mean(total_iou)))
-        except tf.errors.OutOfRangeError:
-            print("end!")
-            print("The average IoU of subcategory %d is %.6f." % (test_category, np.mean(total_iou)))
+#        # Calculate average IoU and loss
+#        total_iou = []
+#        total_loss = []
+#        try:
+#            i = 1
+#            while True:
+#                batch = sess.run(batch_tensor)
+#                if batch[0].shape[0] is not bs:
+#                    break
+#                img_matrix = dataset.img2matrix(batch[0], seq)
+#                model_matrix = dataset.modelpath2matrix(batch[1])
+#                
+#                batch_iou, batch_loss = sess.run([IoU, loss], feed_dict = {x : img_matrix, gt : model_matrix})
+#                total_iou.append(batch_iou)
+#                total_loss.append(batch_loss)
+#                i += 1
+#                if i % 20 == 0:
+#                    print("After %d batches: Average IoU:%.6f, loss:%.6f." % (i, np.mean(total_iou), np.mean(total_loss)))
+#        except tf.errors.OutOfRangeError:
+#            print("tf.errors.OutOfRangeError!")
+#        print("After testing the subcategory %d, the average IoU is %.6f and loss is %.6f." % (test_category, np.mean(total_iou), np.mean(total_loss)))
             
                 
 test(graph_path = config.save_model_path + config.model_name + '-100.meta',
