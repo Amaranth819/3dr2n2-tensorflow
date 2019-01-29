@@ -27,8 +27,8 @@ def evaluate_batch_prediction(pred, gt, threshold):
     return IoU
 
 def softmax_cross_entropy(pred, gt):
-    # pred: [bs, 32, 32, 32, 2]
-    # gt: [bs, 32, 32, 32]
+    # pred: [..., 2]
+    # gt: [...]
     with tf.name_scope("loss_function"):
         loss = tf.reduce_mean(tf.nn.sparse_softmax_cross_entropy_with_logits(labels = gt, logits = pred), name = "cross_entropy_loss")
         tf.summary.scalar("loss", loss)
@@ -39,7 +39,7 @@ class Train(object):
         self.input = tf.placeholder(dtype = tf.float32, shape = config.input_size, name = "input")
         self.ground_truth = tf.placeholder(dtype = tf.int32, shape = config.ground_truth_size, name = "ground_truth")
         
-    def train(self, subcate):  
+    def train(self, subcate, epoch, bs):  
         # tf.reset_default_graph()
         sess = tf.Session()
         
@@ -74,8 +74,11 @@ class Train(object):
         
         # sess.graph.finalize()
         
-        for e in range(config.epoch):
+        e = 0
+        while e < epoch:
             batch = sess.run(batch_tensor)
+            if batch[0].shape[0] is not bs:
+                continue
             
             img_matrix = dataset.img2matrix(batch[0], config.sequence_length)
             model_matrix = dataset.modelpath2matrix(batch[1])
@@ -89,7 +92,11 @@ class Train(object):
                 saver.save(sess, config.save_model_path + config.model_name, global_step = config.save_model_step)
                 print("Save the model successfully!")
                 
+            e += 1
+                
         train_writer.close()
         
 t = Train()
-t.train(config.subcate)
+t.train(subcate = config.subcate,
+        epoch = config.epoch,
+        bs = config.batch_size)

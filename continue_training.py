@@ -13,7 +13,7 @@ import config
 
 import tensorflow as tf
 
-def continue_training(model_path, graph_path, ckpt_path, input_name, gt_name, epoch, subcate):
+def continue_training(model_path, graph_path, ckpt_path, input_name, gt_name, epoch, subcate, bs):
     sess = tf.Session()
     saver = tf.train.import_meta_graph(graph_path)
     saver.restore(sess, tf.train.latest_checkpoint(ckpt_path))
@@ -40,8 +40,11 @@ def continue_training(model_path, graph_path, ckpt_path, input_name, gt_name, ep
     batch_tensor = iterator.get_next()
     print("Create the training dataset successfully!")
     
-    for e in range(epoch):
+    e = 0
+    while e < epoch:
         batch = sess.run(batch_tensor)
+        if batch[0].shape[0] is not bs:
+            continue
         
         img_matrix = dataset.img2matrix(batch[0], config.sequence_length)
         model_matrix = dataset.modelpath2matrix(batch[1])
@@ -55,6 +58,8 @@ def continue_training(model_path, graph_path, ckpt_path, input_name, gt_name, ep
             saver.save(sess, model_path, global_step = config.save_model_step)
             print("Save the model successfully!")
             
+        e += 1
+            
     train_writer.close()
     
 continue_training(
@@ -63,5 +68,6 @@ continue_training(
         ckpt_path = config.save_model_path,
         input_name = "input:0",
         gt_name = "ground_truth:0",
-        epoch = 200,
-        subcate = config.subcate)
+        epoch = 400,
+        subcate = config.subcate,
+        bs = config.batch_size)
