@@ -49,7 +49,6 @@ def test(graph_path, ckpt_path, input_name, gt_name, pred_name, test_category, t
         
         # Write model
         for i in range(test_size):
-            batch_tensor = iterator.get_next()
             batch = sess.run(batch_tensor)
             print(batch[1])
             img_matrix = dataset.img2matrix(batch[0], seq)
