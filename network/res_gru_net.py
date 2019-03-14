@@ -35,7 +35,7 @@ def build_encoder(x):
     # print x.get_shape().as_list()
     
     # layer 0
-    with tf.variable_scope("encoder_layer0", reuse = False):
+    with tf.variable_scope("encoder_layer0", reuse = tf.AUTO_REUSE):
         conv0_0 = layers.conv_layer(name = "conv0_0", x = x, filter_shape = layers.create_variable("filter0_0", shape = [7, 7, 3, 96]))
         conv0_0 = layers.batch_normalization(conv0_0, "conv0_0_bn")
         conv0_0 = layers.relu_layer(conv0_0)
@@ -49,7 +49,7 @@ def build_encoder(x):
         outputs.append(layer0) # [bs * size, 64, 64, 96]
         
     # layer 1
-    with tf.variable_scope("encoder_layer1", reuse = False):
+    with tf.variable_scope("encoder_layer1", reuse = tf.AUTO_REUSE):
         conv1_0 = layers.conv_layer(name = "conv1_0", x = layer0, filter_shape = layers.create_variable("filter1_0", shape = [3, 3, 96, 128]))
         conv1_0 = layers.batch_normalization(conv1_0, "conv1_0_bn")
         conv1_0 = layers.relu_layer(conv1_0)
@@ -63,7 +63,7 @@ def build_encoder(x):
         outputs.append(layer1) # [bs * size, 32, 32, 128]
         
     # layer 2
-    with tf.variable_scope("encoder_layer2", reuse = False):
+    with tf.variable_scope("encoder_layer2", reuse = tf.AUTO_REUSE):
         conv2_0 = layers.conv_layer(name = "conv2_0", x = layer1, filter_shape = layers.create_variable("filter2_0", shape = [3, 3, 128, 256]))
         conv2_0 = layers.batch_normalization(conv2_0, "conv2_0_bn")
         conv2_0 = layers.relu_layer(conv2_0)
@@ -77,7 +77,7 @@ def build_encoder(x):
         outputs.append(layer2) # [bs * size, 16, 16, 256]
         
     # layer 3
-    with tf.variable_scope("encoder_layer3", reuse = False):
+    with tf.variable_scope("encoder_layer3", reuse = tf.AUTO_REUSE):
         conv3_0 = layers.conv_layer(name = "conv3_0", x = layer2, filter_shape = layers.create_variable("filter3_0", shape = [3, 3, 256, 256]))
         conv3_0 = layers.batch_normalization(conv3_0, "conv3_0_bn")
         conv3_0 = layers.relu_layer(conv3_0)
@@ -88,7 +88,7 @@ def build_encoder(x):
         outputs.append(layer3) # [bs * size, 8, 8, 256]
         
     # layer 4
-    with tf.variable_scope("encoder_layer4", reuse = False):
+    with tf.variable_scope("encoder_layer4", reuse = tf.AUTO_REUSE):
         conv4_0 = layers.conv_layer(name = "conv4_0", x = layer3, filter_shape = layers.create_variable("filter4_0", shape = [3, 3, 256, 256]))
         conv4_0 = layers.batch_normalization(conv4_0, "conv4_0_bn")
         conv4_0 = layers.relu_layer(conv4_0)
@@ -102,7 +102,7 @@ def build_encoder(x):
         outputs.append(layer4) # [bs * size, 4, 4, 256]
         
     # layer 5
-    with tf.variable_scope("encoder_layer5", reuse = False):
+    with tf.variable_scope("encoder_layer5", reuse = tf.AUTO_REUSE):
         conv5_0 = layers.conv_layer(name = "conv5_0", x = layer4, filter_shape = layers.create_variable("filter5_0", shape = [3, 3, 256, 256]))
         conv5_0 = layers.batch_normalization(conv5_0, "conv5_0_bn")
         conv5_0 = layers.relu_layer(conv5_0)
@@ -120,7 +120,7 @@ def build_encoder(x):
     flatten = layers.flatten_layer(layer5)
     outputs.append(flatten)
     
-    with tf.variable_scope("fc_layer", reuse = False):
+    with tf.variable_scope("fc_layer", reuse = tf.AUTO_REUSE):
         layer_fc = layers.fully_connected_layer(flatten, fc_layer_size[0], "fclayer_w", "fclayer_b")
         # layer_fc = layers.batch_normalization(layer_fc, "fc_bn")
         layer_fc = layers.relu_layer(layer_fc)
