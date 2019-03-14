@@ -55,11 +55,11 @@ def relu_layer(x):
     return tf.nn.leaky_relu(x, alpha = 0.1)
 
 # Batch normalization layer
-def batch_normalization(x):
+def batch_normalization(x, name):
     mean, variance = tf.nn.moments(x, axes = [0, 1, 2], keep_dims = False)
     dimension = x.get_shape().as_list()[-1]
-    beta = create_variable(name = "beta", shape = [dimension], initializer = tf.constant_initializer(1.0, tf.float32))
-    gamma = create_variable(name = "gamma", shape = [dimension], initializer = tf.constant_initializer(1.0, tf.float32))
+    beta = create_variable(name = name + "_beta", shape = [dimension], initializer = tf.constant_initializer(1.0, tf.float32))
+    gamma = create_variable(name = name + "_gamma", shape = [dimension], initializer = tf.constant_initializer(1.0, tf.float32))
     return tf.nn.batch_normalization(x, mean, variance, beta, gamma, 0.001)
 
 
