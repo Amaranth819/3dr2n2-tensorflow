@@ -35,82 +35,82 @@ def build_encoder(x):
     # print x.get_shape().as_list()
     
     # layer 0
-    with tf.variable_scope("encoder_layer0", reuse = tf.AUTO_REUSE):
+    with tf.variable_scope("encoder_layer0", reuse = False):
         conv0_0 = layers.conv_layer(name = "conv0_0", x = x, filter_shape = layers.create_variable("filter0_0", shape = [7, 7, 3, 96]))
-        conv0_0 = layers.batch_normalization(conv0_0)
+        conv0_0 = layers.batch_normalization(conv0_0, "conv0_0_bn")
         conv0_0 = layers.relu_layer(conv0_0)
         conv0_1 = layers.conv_layer(name = "conv0_1", x = conv0_0, filter_shape = layers.create_variable("filter0_1", shape = [3, 3, 96, 96]))
-        conv0_1 = layers.batch_normalization(conv0_1)
+        conv0_1 = layers.batch_normalization(conv0_1, "conv0_1_bn")
         conv0_1 = layers.relu_layer(conv0_1)
         shortcut0 = layers.conv_layer(name = "shortcut", x = x, filter_shape = layers.create_variable("filter0_2", shape = [1, 1, 3, 96]))
-        shortcut0 = layers.batch_normalization(shortcut0)
+        shortcut0 = layers.batch_normalization(shortcut0, "shortcut0_bn")
         shortcut0 = layers.relu_layer(shortcut0)
         layer0 = layers.pooling_layer("pooling", conv0_1 + shortcut0, pooling)
         outputs.append(layer0) # [bs * size, 64, 64, 96]
         
     # layer 1
-    with tf.variable_scope("encoder_layer1", reuse = tf.AUTO_REUSE):
+    with tf.variable_scope("encoder_layer1", reuse = False):
         conv1_0 = layers.conv_layer(name = "conv1_0", x = layer0, filter_shape = layers.create_variable("filter1_0", shape = [3, 3, 96, 128]))
-        conv1_0 = layers.batch_normalization(conv1_0)
+        conv1_0 = layers.batch_normalization(conv1_0, "conv1_0_bn")
         conv1_0 = layers.relu_layer(conv1_0)
         conv1_1 = layers.conv_layer(name = "conv1_1", x = conv1_0, filter_shape = layers.create_variable("filter1_1", shape = [3, 3, 128, 128]))
-        conv1_1 = layers.batch_normalization(conv1_1)
+        conv1_1 = layers.batch_normalization(conv1_1, "conv1_1_bn")
         conv1_1 = layers.relu_layer(conv1_1)
         shortcut1 = layers.conv_layer(name = "shortcut", x = layer0, filter_shape = layers.create_variable("filter1_2", shape = [1, 1, 96, 128]))
-        shortcut1 = layers.batch_normalization(shortcut1)
+        shortcut1 = layers.batch_normalization(shortcut1, "shortcut1_bn")
         shortcut1 = layers.relu_layer(shortcut1)
         layer1 = layers.pooling_layer("pooling", conv1_1 + shortcut1, pooling)
         outputs.append(layer1) # [bs * size, 32, 32, 128]
         
     # layer 2
-    with tf.variable_scope("encoder_layer2", reuse = tf.AUTO_REUSE):
+    with tf.variable_scope("encoder_layer2", reuse = False):
         conv2_0 = layers.conv_layer(name = "conv2_0", x = layer1, filter_shape = layers.create_variable("filter2_0", shape = [3, 3, 128, 256]))
-        conv2_0 = layers.batch_normalization(conv2_0)
+        conv2_0 = layers.batch_normalization(conv2_0, "conv2_0_bn")
         conv2_0 = layers.relu_layer(conv2_0)
         conv2_1 = layers.conv_layer(name = "conv2_1", x = conv2_0, filter_shape = layers.create_variable("filter2_1", shape = [3, 3, 256, 256]))
-        conv2_1 = layers.batch_normalization(conv2_1)
+        conv2_1 = layers.batch_normalization(conv2_1, "conv2_1_bn")
         conv2_1 = layers.relu_layer(conv2_1)
         shortcut2 = layers.conv_layer(name = "shortcut", x = layer1, filter_shape = layers.create_variable("filter2_2", shape = [1, 1, 128, 256]))
-        shortcut2 = layers.batch_normalization(shortcut2)
+        shortcut2 = layers.batch_normalization(shortcut2, "shortcut2_bn")
         shortcut2 = layers.relu_layer(shortcut2)
         layer2 = layers.pooling_layer("pooling", conv2_1 + shortcut2, pooling)
         outputs.append(layer2) # [bs * size, 16, 16, 256]
         
     # layer 3
-    with tf.variable_scope("encoder_layer3", reuse = tf.AUTO_REUSE):
+    with tf.variable_scope("encoder_layer3", reuse = False):
         conv3_0 = layers.conv_layer(name = "conv3_0", x = layer2, filter_shape = layers.create_variable("filter3_0", shape = [3, 3, 256, 256]))
-        conv3_0 = layers.batch_normalization(conv3_0)
+        conv3_0 = layers.batch_normalization(conv3_0, "conv3_0_bn")
         conv3_0 = layers.relu_layer(conv3_0)
         conv3_1 = layers.conv_layer(name = "conv3_1", x = conv3_0, filter_shape = layers.create_variable("filter3_1", shape = [3, 3, 256, 256]))
-        conv3_1 = layers.batch_normalization(conv3_1)
+        conv3_1 = layers.batch_normalization(conv3_1, "conv3_1_bn")
         conv3_1 = layers.relu_layer(conv3_1)
         layer3 = layers.pooling_layer("pooling", conv3_1, pooling)
         outputs.append(layer3) # [bs * size, 8, 8, 256]
         
     # layer 4
-    with tf.variable_scope("encoder_layer4", reuse = tf.AUTO_REUSE):
+    with tf.variable_scope("encoder_layer4", reuse = False):
         conv4_0 = layers.conv_layer(name = "conv4_0", x = layer3, filter_shape = layers.create_variable("filter4_0", shape = [3, 3, 256, 256]))
-        conv4_0 = layers.batch_normalization(conv4_0)
+        conv4_0 = layers.batch_normalization(conv4_0, "conv4_0_bn")
         conv4_0 = layers.relu_layer(conv4_0)
         conv4_1 = layers.conv_layer(name = "conv4_1", x = conv4_0, filter_shape = layers.create_variable("filter4_1", shape = [3, 3, 256, 256]))
-        conv4_1 = layers.batch_normalization(conv4_1)
+        conv4_1 = layers.batch_normalization(conv4_1, "conv4_1_bn")
         conv4_1 = layers.relu_layer(conv4_1)
         shortcut4 = layers.conv_layer(name = "shortcut", x = layer3, filter_shape = layers.create_variable("filter4_2", shape = [1, 1, 256, 256]))
-        shortcut4 = layers.batch_normalization(shortcut4)
+        shortcut4 = layers.batch_normalization(shortcut4, "shortcut4_bn")
         shortcut4 = layers.relu_layer(shortcut4)
         layer4 = layers.pooling_layer("pooling", conv4_1 + shortcut4, pooling)
         outputs.append(layer4) # [bs * size, 4, 4, 256]
         
     # layer 5
-    with tf.variable_scope("encoder_layer5", reuse = tf.AUTO_REUSE):
+    with tf.variable_scope("encoder_layer5", reuse = False):
         conv5_0 = layers.conv_layer(name = "conv5_0", x = layer4, filter_shape = layers.create_variable("filter5_0", shape = [3, 3, 256, 256]))
-        conv5_0 = layers.batch_normalization(conv5_0)
+        conv5_0 = layers.batch_normalization(conv5_0, "conv5_0_bn")
         conv5_0 = layers.relu_layer(conv5_0)
         conv5_1 = layers.conv_layer(name = "conv5_1", x = conv5_0, filter_shape = layers.create_variable("filter5_1", shape = [3, 3, 256, 256]))
-        conv5_1 = layers.batch_normalization(conv5_1)
+        conv5_1 = layers.batch_normalization(conv5_1, "conv5_1_bn")
         conv5_1 = layers.relu_layer(conv5_1)
         shortcut5 = layers.conv_layer(name = "shortcut", x = layer4, filter_shape = layers.create_variable("filter5_2", shape = [1, 1, 256, 256]))
-        shortcut5 = layers.batch_normalization(shortcut5)
+        shortcut5 = layers.batch_normalization(shortcut5, "shortcut5_bn")
         shortcut5 = layers.relu_layer(shortcut5)
         layer5 = layers.pooling_layer("pooling", conv5_1 + shortcut5, pooling)
         outputs.append(layer5) # [bs * size, 2, 2, 256]
@@ -120,9 +120,9 @@ def build_encoder(x):
     flatten = layers.flatten_layer(layer5)
     outputs.append(flatten)
     
-    with tf.variable_scope("fc_layer", reuse=tf.AUTO_REUSE):
+    with tf.variable_scope("fc_layer", reuse = False):
         layer_fc = layers.fully_connected_layer(flatten, fc_layer_size[0], "fclayer_w", "fclayer_b")
-        # layer_fc = layers.batch_normalization(layer_fc)
+        # layer_fc = layers.batch_normalization(layer_fc, "fc_bn")
         layer_fc = layers.relu_layer(layer_fc)
         outputs.append(layer_fc) # [bs * size, 1024]
     
